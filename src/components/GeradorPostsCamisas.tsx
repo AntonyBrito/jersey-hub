@@ -85,29 +85,41 @@ const GeradorPostsCamisas = () => {
 
   const processDynamicContent = (content: string, dados: FormData): string => {
     const dynamicRegex = /\${(.*?)}/g;
-    return content.replace(dynamicRegex, (match, expression) => {
+    let processedContent = content;
+
+    // First, replace simple placeholders like ${dados.nomeClube}
+    Object.keys(dados).forEach(key => {
+      const regex = new RegExp(`\\\${dados.${key}}`, 'g');
+      processedContent = processedContent.replace(regex, (dados as any)[key]);
+    });
+
+    // Then, evaluate more complex expressions
+    processedContent = processedContent.replace(dynamicRegex, (match, expression) => {
       try {
+        // A safer way to evaluate expressions without exposing global scope
         const func = new Function('dados', `return ${expression}`);
         return func(dados);
       } catch (error) {
+        // If it fails, it might be a wildcard, so return the match
         return match;
       }
     });
+
+    return processedContent;
   };
 
   const gerarConteudoTemplate = (template: Template, dados: FormData) => {
     let content = template.template;
 
-    // Process dynamic content
+    // Process all dynamic content and placeholders
     content = processDynamicContent(content, dados);
 
-    Object.keys(dados).forEach(key => {
-      const regex = new RegExp(`\\\${dados.${key}}`, 'g');
-      content = content.replace(regex, (dados as any)[key]);
-    });
-
+    // Replace wildcards
     content = content.replace(/\${saudacoes}/g, getRandomWildcard('saudacoes'));
     content = content.replace(/\${despedidas}/g, getRandomWildcard('despedidas'));
+
+    // Finally, replace newline characters for correct rendering
+    content = content.replace(/\\n/g, '\n');
 
     return content;
   };

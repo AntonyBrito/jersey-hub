@@ -11,9 +11,9 @@ export default function Historico() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    // In a real application, you would fetch this data from a database or local storage.
-    const storedPosts = JSON.parse(localStorage.getItem('postsGerados') || '[]');
-    setPosts(storedPosts);
+    fetch('/api/posts')
+      .then(res => res.json())
+      .then(data => setPosts(data));
   }, []);
 
   return (

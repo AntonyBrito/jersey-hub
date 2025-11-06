@@ -12,27 +12,41 @@ export default function Ideias() {
   const [newIdea, setNewIdea] = useState('');
 
   useEffect(() => {
-    const storedIdeas = JSON.parse(localStorage.getItem('ideias') || '[]');
-    setIdeas(storedIdeas);
+    fetch('/api/ideias')
+      .then(res => res.json())
+      .then(data => setIdeas(data));
   }, []);
 
-  const handleAddIdea = () => {
+  const handleAddIdea = async () => {
     if (newIdea.trim() === '') return;
-    const newIdeaObj: Idea = {
-      id: Date.now(),
-      text: newIdea,
-      createdAt: new Date().toISOString(),
-    };
-    const updatedIdeas = [...ideas, newIdeaObj];
-    setIdeas(updatedIdeas);
-    localStorage.setItem('ideias', JSON.stringify(updatedIdeas));
-    setNewIdea('');
+
+    const res = await fetch('/api/ideias', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: newIdea }),
+    });
+
+    if (res.ok) {
+      const newIdeaFromServer = await res.json();
+      setIdeas([...ideas, newIdeaFromServer]);
+      setNewIdea('');
+    }
   };
 
-  const handleDeleteIdea = (id: number) => {
-    const updatedIdeas = ideas.filter(idea => idea.id !== id);
-    setIdeas(updatedIdeas);
-    localStorage.setItem('ideias', JSON.stringify(updatedIdeas));
+  const handleDeleteIdea = async (id: number) => {
+    const res = await fetch('/api/ideias', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (res.ok) {
+      setIdeas(ideas.filter(idea => idea.id !== id));
+    }
   };
 
   return (

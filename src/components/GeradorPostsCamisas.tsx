@@ -18,8 +18,6 @@ interface Template {
   nome: string;
   categoria: string;
   template: string;
-  dynamic?: boolean;
-  logic?: string;
 }
 
 interface Wildcards {
@@ -85,26 +83,23 @@ const GeradorPostsCamisas = () => {
     return wildcardArray[Math.floor(Math.random() * wildcardArray.length)];
   };
 
+  const processDynamicContent = (content: string, dados: FormData): string => {
+    const dynamicRegex = /\${(.*?)}/g;
+    return content.replace(dynamicRegex, (match, expression) => {
+      try {
+        const func = new Function('dados', `return ${expression}`);
+        return func(dados);
+      } catch (error) {
+        return match;
+      }
+    });
+  };
+
   const gerarConteudoTemplate = (template: Template, dados: FormData) => {
     let content = template.template;
 
-    if (template.dynamic && template.logic) {
-      // This is a simplified and safer way to execute dynamic logic.
-      // In a real-world scenario, you might want to use a more robust templating engine.
-      let opcoes = '';
-      if (dados.modelos === 'home') opcoes = `${dados.cor1} Home clássica`;
-      else if (dados.modelos === 'away') opcoes = `${dados.cor2} Away moderna`;
-      else if (dados.modelos === 'third') opcoes = `${dados.cor3} Third ousada`;
-      else if (dados.modelos === 'home-away') opcoes = `${dados.cor1} Home clássica\n${dados.cor2} Away moderna`;
-      else if (dados.modelos === 'home-away-third') opcoes = `${dados.cor1} Home clássica\n${dados.cor2} Away moderna\n${dados.cor3} Third ousada`;
-      else if (dados.modelos === 'edicao-especial') opcoes = `✨ Edição Especial Limitada`;
-      else if (dados.modelos === 'goleiro') opcoes = `🧤 Modelo Exclusivo de Goleiro`;
-      else if (dados.modelos === 'retro') opcoes = `⏰ Retrô Clássica`;
-      else if (dados.modelos === 'treino') opcoes = `💪 Treino Oficial`;
-      else opcoes = `🔥 Modelo Pré-Jogo`;
-
-      content = content.replace('${opcoes}', opcoes);
-    }
+    // Process dynamic content
+    content = processDynamicContent(content, dados);
 
     Object.keys(dados).forEach(key => {
       const regex = new RegExp(`\\\${dados.${key}}`, 'g');
@@ -125,7 +120,7 @@ const GeradorPostsCamisas = () => {
     }));
   };
 
-  const gerarPosts = () => {
+  const gerarPosts = async () => {
     if (!formData.nomeClube || !formData.link) {
       alert('Por favor, preencha o nome do clube e o link!');
       return;
@@ -143,9 +138,13 @@ const GeradorPostsCamisas = () => {
       };
     });
 
-    const storedPosts = JSON.parse(localStorage.getItem('postsGerados') || '[]');
-    const updatedPosts = [...postsGerados, ...storedPosts];
-    localStorage.setItem('postsGerados', JSON.stringify(updatedPosts));
+    await fetch('/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postsGerados),
+    });
 
     setPostGerado('gerando');
   };

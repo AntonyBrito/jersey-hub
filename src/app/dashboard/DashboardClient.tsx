@@ -24,8 +24,9 @@ export default function DashboardClient() {
       .then(res => res.json())
       .then(data => setEncomendas(data));
 
-    const storedPosts = JSON.parse(localStorage.getItem('postsGerados') || '[]');
-    setPosts(storedPosts);
+    fetch('/api/posts')
+      .then(res => res.json())
+      .then(data => setPosts(data));
   }, []);
 
   const totalEncomendas = encomendas.length;

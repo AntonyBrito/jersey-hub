@@ -12,9 +12,7 @@
   {
     "nome": "Qual você prefere?",
     "categoria": "interativo",
-    "template": "Qual camisa do ${dados.nomeClube} você prefere? 💭\\n\\n${opcoes}\\n\\nTodas disponíveis para personalizar!\\nGarantia + Qualidade Premium 1.1\\n\\nEscolha a sua: ${dados.link}",
-    "dynamic": true,
-    "logic": "let opcoes = ''; if (dados.modelos === 'home') opcoes = `${dados.cor1} Home clássica`; else if (dados.modelos === 'away') opcoes = `${dados.cor2} Away moderna`; else if (dados.modelos === 'third') opcoes = `${dados.cor3} Third ousada`; else if (dados.modelos === 'home-away') opcoes = `${dados.cor1} Home clássica\\n${dados.cor2} Away moderna`; else if (dados.modelos === 'home-away-third') opcoes = `${dados.cor1} Home clássica\\n${dados.cor2} Away moderna\\n${dados.cor3} Third ousada`; else if (dados.modelos === 'edicao-especial') opcoes = `✨ Edição Especial Limitada`; else if (dados.modelos === 'goleiro') opcoes = `🧤 Modelo Exclusivo de Goleiro`; else if (dados.modelos === 'retro') opcoes = `⏰ Retrô Clássica`; else if (dados.modelos === 'treino') opcoes = `💪 Treino Oficial`; else opcoes = `🔥 Modelo Pré-Jogo`;"
+    "template": "Qual camisa do ${dados.nomeClube} você prefere? 💭\\n\\n${dados.modelos === 'home' ? `${dados.cor1} Home clássica` : dados.modelos === 'away' ? `${dados.cor2} Away moderna` : dados.modelos === 'third' ? `${dados.cor3} Third ousada` : dados.modelos === 'home-away' ? `${dados.cor1} Home clássica\\n${dados.cor2} Away moderna` : dados.modelos === 'home-away-third' ? `${dados.cor1} Home clássica\\n${dados.cor2} Away moderna\\n${dados.cor3} Third ousada` : dados.modelos === 'edicao-especial' ? `✨ Edição Especial Limitada` : dados.modelos === 'goleiro' ? `🧤 Modelo Exclusivo de Goleiro` : dados.modelos === 'retro' ? `⏰ Retrô Clássica` : dados.modelos === 'treino' ? `💪 Treino Oficial` : `🔥 Modelo Pré-Jogo`}\\n\\nTodas disponíveis para personalizar!\\nGarantia + Qualidade Premium 1.1\\n\\nEscolha a sua: ${dados.link}"
   },
   {
     "nome": "Formato Elegante",

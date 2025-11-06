@@ -1,0 +1,109 @@
+[
+  {
+    "nome": "Por que é diferente?",
+    "categoria": "informativo",
+    "template": "Por que nossa camisa do ${dados.nomeClube} é diferente?\\n\\n✓ Tecido Premium 1.1 (respirável e durável)\\n✓ Personalização sem custo extra\\n✓ Garantia em todas as compras\\n✓ Vários modelos em um só anúncio\\n\\nVale cada centavo: ${dados.link}"
+  },
+  {
+    "nome": "Personalização GRÁTIS",
+    "categoria": "promocional",
+    "template": "⚡ Personalização GRÁTIS na camisa do ${dados.nomeClube}!\\n\\nColoque seu nome, número do seu ídolo ou crie a sua própria.\\n${dados.modelos.includes('edicao-especial') ? 'Edição especial exclusiva!' : dados.modelos === 'home' ? 'Modelo Home disponível!' : dados.modelos === 'away' ? 'Modelo Away disponível!' : dados.modelos === 'third' ? 'Modelo Third disponível!' : dados.modelos === 'home-away' ? 'Modelos Home e Away disponíveis!' : dados.modelos === 'goleiro' ? 'Modelo exclusivo de goleiro!' : dados.modelos === 'retro' ? 'Modelo retrô clássico!' : dados.modelos === 'treino' ? 'Modelo de treino oficial!' : dados.modelos === 'pre-jogo' ? 'Modelo de pré-jogo!' : 'Vários modelos disponíveis - Home, Away e Third!'}\\n\\n📦 Entrega rápida\\n🔒 Compra protegida\\n\\n${saudacoes} ${dados.link}"
+  },
+  {
+    "nome": "Qual você prefere?",
+    "categoria": "interativo",
+    "template": "Qual camisa do ${dados.nomeClube} você prefere? 💭\\n\\n${opcoes}\\n\\nTodas disponíveis para personalizar!\\nGarantia + Qualidade Premium 1.1\\n\\nEscolha a sua: ${dados.link}",
+    "dynamic": true,
+    "logic": "let opcoes = ''; if (dados.modelos === 'home') opcoes = `${dados.cor1} Home clássica`; else if (dados.modelos === 'away') opcoes = `${dados.cor2} Away moderna`; else if (dados.modelos === 'third') opcoes = `${dados.cor3} Third ousada`; else if (dados.modelos === 'home-away') opcoes = `${dados.cor1} Home clássica\\n${dados.cor2} Away moderna`; else if (dados.modelos === 'home-away-third') opcoes = `${dados.cor1} Home clássica\\n${dados.cor2} Away moderna\\n${dados.cor3} Third ousada`; else if (dados.modelos === 'edicao-especial') opcoes = `✨ Edição Especial Limitada`; else if (dados.modelos === 'goleiro') opcoes = `🧤 Modelo Exclusivo de Goleiro`; else if (dados.modelos === 'retro') opcoes = `⏰ Retrô Clássica`; else if (dados.modelos === 'treino') opcoes = `💪 Treino Oficial`; else opcoes = `🔥 Modelo Pré-Jogo`;"
+  },
+  {
+    "nome": "Formato Elegante",
+    "categoria": "informativo",
+    "template": "🏆 | ${dados.nomeClube.toUpperCase()} ${dados.temporada} | 🏆\\n\\n━━━━━━━━━━━━━━━\\n${dados.cor1} Coleção Completa\\n⭐ Premium Quality 1.1\\n✍️ Personalização Free\\n🛡️ Garantia Inclusa\\n━━━━━━━━━━━━━━━\\n\\n${saudacoes} ${dados.link}"
+  },
+  {
+    "nome": "Presente Perfeito",
+    "categoria": "emocional",
+    "template": "🎁 Presente perfeito para o torcedor do ${dados.nomeClube}!\\n\\nSurpreenda com a camisa oficial ${dados.temporada}\\nNome personalizado deixa ainda mais especial\\n\\n💙 Qualidade Premium 1.1 garantida\\n📏 Todos os tamanhos disponíveis\\n${dados.modelos.includes('edicao-especial') ? '✨ Edição especial limitada' : dados.modelos === 'home-away-third' ? '🎨 3 modelos para escolher' : '🎨 Modelos exclusivos'}\\n\\nPresenteie agora: ${dados.link}"
+  },
+  {
+    "nome": "Urgência/Escassez",
+    "categoria": "urgencia",
+    "template": "🚨 ATENÇÃO, torcedor do ${dados.nomeClube}!\\n\\n${dados.modelos.includes('edicao-especial') ? 'Edição ESPECIAL com estoque super limitado!' : `Estoque limitado da coleção ${dados.temporada}`}\\nOs modelos mais procurados estão saindo rápido\\n\\n✅ Qualidade Premium 1.1\\n✅ Todos os tamanhos disponíveis (por enquanto!)\\n✅ Personalização incluída\\n\\nNão perca: ${dados.link}"
+  },
+  {
+    "nome": "Review/Depoimento",
+    "categoria": "emocional",
+    "template": "\"A qualidade surpreendeu!\" ⭐⭐⭐⭐⭐\\n\\nCamisa ${dados.nomeClube} ${dados.temporada} chegando nos torcedores!\\nTecido premium, acabamento impecável e personalização top.\\n\\nVocê também pode ter a sua:\\n🔹 Escolha o modelo\\n🔹 Personalize como quiser\\n🔹 Receba em casa\\n\\nPeça aqui: ${dados.link}"
+  },
+  {
+    "nome": "Tradição/Emocional",
+    "categoria": "emocional",
+    "template": "${dados.cor1} A tradição do ${dados.nomeClube} merece estar no seu armário!\\n\\nReviva a emoção com a nova camisa ${dados.temporada}.\\nPerfeita para torcer, jogar ou usar no dia a dia.\\n\\n✨ Personalização incluída\\n🛡️ Garantia + Qualidade Premium 1.1\\n🎯 ${dados.modelos === 'home-away-third' ? 'Três modelos exclusivos' : dados.modelos.includes('edicao-especial') ? 'Edição limitada exclusiva' : 'Modelos oficiais'}\\n\\n👉 ${dados.link}"
+  },
+  {
+    "nome": "Call to Action Direto",
+    "categoria": "promocional",
+    "template": "⚽ CAMISA ${dados.nomeClube.toUpperCase()} ${dados.temporada} ⚽\\n\\n${dados.modelos === 'home' ? '✓ Modelo Home Oficial' : dados.modelos === 'away' ? '✓ Modelo Away Oficial' : dados.modelos === 'third' ? '✓ Modelo Third Oficial' : dados.modelos === 'home-away' ? '✓ Modelos Home e Away' : dados.modelos === 'home-away-third' ? '✓ Home | Away | Third' : dados.modelos === 'edicao-especial' ? '✓ EDIÇÃO ESPECIAL LIMITADA' : dados.modelos === 'goleiro' ? '✓ Modelo Goleiro Exclusivo' : dados.modelos === 'retro' ? '✓ Modelo Retrô Clássico' : dados.modelos === 'treino' ? '✓ Modelo Treino Oficial' : '✓ Modelo Pré-Jogo'}\\n✓ Tecido Premium 1.1\\n✓ Personalização Free\\n✓ Garantia Total\\n\\n🔥 ${saudacoes} ${dados.link}"
+  },
+  {
+    "nome": "Minimalista Pro",
+    "categoria": "informativo",
+    "template": "${dados.nomeClube} ${dados.temporada}\\n\\nPremium 1.1 | Personalização Free | Garantia\\n\\n${dados.link}"
+  },
+  {
+    "nome": "Dia de Jogo",
+    "categoria": "emocional",
+    "template": "⚽ DIA DE JOGO DO ${dados.nomeClube.toUpperCase()}!\\n\\nVista as cores do seu time com orgulho!\\n${dados.modelos.includes('edicao-especial') ? 'Edição especial para verdadeiros torcedores' : `Camisa oficial ${dados.temporada}`}\\n\\n🔥 Tecido que não desbota\\n💪 Conforto para torcer o jogo todo\\n✍️ Coloque seu nome ou do craque\\n\\n${despedidas} ${dados.link}"
+  },
+  {
+    "nome": "Comparação Vantagens",
+    "categoria": "informativo",
+    "template": "❌ Camisas genéricas\\n✅ Camisa oficial ${dados.nomeClube}\\n\\n❌ Tecido comum\\n✅ Premium 1.1 respirável\\n\\n❌ Sem garantia\\n✅ Garantia em todas as compras\\n\\n❌ Personalização cara\\n✅ Personalização GRÁTIS\\n\\nA escolha é óbvia: ${dados.link}"
+  },
+  {
+    "nome": "Edição Limitada Especial",
+    "categoria": "urgencia",
+    "template": "⚠️ EDIÇÃO LIMITADA ${dados.nomeClube.toUpperCase()} ⚠️\\n\\n${dados.modelos.includes('edicao-especial') || dados.modelos.includes('retro') ? '🎯 Poucas unidades disponíveis!\\n🔥 Modelo exclusivo que vai esgotar' : '🎯 Coleção especial disponível\\n🔥 Aproveite enquanto tem estoque'}\\n\\n✨ Qualidade Premium 1.1\\n✨ Personalização incluída\\n✨ Entrega garantida\\n\\n${saudacoes} ${dados.link}"
+  },
+  {
+    "nome": "Antes/Depois",
+    "categoria": "emocional",
+    "template": "ANTES: Querer a camisa do ${dados.nomeClube}\\nDEPOIS: Ter a camisa personalizada na sua casa!\\n\\nComo? É simples:\\n1️⃣ Clica no link\\n2️⃣ Escolhe o modelo\\n3️⃣ Personaliza do seu jeito\\n4️⃣ Recebe em casa\\n\\n${dados.modelos.includes('edicao-especial') ? '✨ Edição especial disponível!' : `✅ Premium 1.1 | ${dados.temporada}`}\\n\\nRealize agora: ${dados.link}"
+  },
+  {
+    "nome": "Para Verdadeiros Torcedores",
+    "categoria": "emocional",
+    "template": "💚 PARA VERDADEIROS TORCEDORES DO ${dados.nomeClube.toUpperCase()}\\n\\n${dados.jogadorDestaque ? `Use o número do ${dados.jogadorDestaque}!\\n` : ''}Mostre sua paixão com a camisa oficial\\n${dados.modelos.includes('edicao-especial') ? 'Edição especial para os apaixonados' : `Temporada ${dados.temporada}`}\\n\\n⚡ Material Premium 1.1\\n⚡ Personalização sem custo\\n⚡ Garantia total\\n\\n${despedidas} ${dados.link}"
+  },
+  {
+    "nome": "Lista de Benefícios Completa",
+    "categoria": "informativo",
+    "template": "✅ CHECKLIST DA CAMISA PERFEITA ${dados.nomeClube}\\n\\n✓ Tecido Premium 1.1 respirável\\n✓ Cores vibrantes que não desbotam\\n✓ Tamanhos PP ao GG disponíveis\\n✓ Personalização gratuita incluída\\n✓ Garantia em todas as compras\\n✓ Entrega rápida e rastreável\\n${dados.modelos.includes('edicao-especial') ? '✓ Edição LIMITADA especial' : `✓ Coleção ${dados.temporada} oficial`}\\n\\nTUDO ISSO: ${dados.link}"
+  },
+  {
+    "nome": "Investimento que Vale",
+    "categoria": "promocional",
+    "template": "💰 Investir na camisa do ${dados.nomeClube} VALE A PENA!\\n\\nPor quê?\\n🎯 Dura muito (Premium 1.1)\\n🎯 Usa em várias ocasiões\\n🎯 Personalização já inclusa\\n🎯 Garantia de qualidade\\n${dados.preco ? `🎯 Apenas ${dados.preco}` : '🎯 Preço justo'}\\n\\nInvista no seu time: ${dados.link}"
+  },
+  {
+    "nome": "Perguntas e Respostas",
+    "categoria": "interativo",
+    "template": "❓ DÚVIDAS SOBRE A CAMISA DO ${dados.nomeClube}?\\n\\n✅ É original? Premium 1.1 de alta qualidade\\n✅ Posso personalizar? SIM, grátis!\\n✅ Tem garantia? Sim, em todas as compras\\n✅ Qual modelo? ${dados.modelos === 'home-away-third' ? 'Home, Away e Third' : dados.modelos.includes('edicao-especial') ? 'Edição Especial' : 'Vários modelos disponíveis'}\\n✅ Entrega rápida? Sim, com rastreio\\n\\nTodas as respostas aqui: ${dados.link}"
+  },
+  {
+    "nome": "Storytelling Torcida",
+    "categoria": "emocional",
+    "template": "📖 Cada torcedor tem sua história com o ${dados.nomeClube}\\n\\nQual é a sua?\\nAquele gol inesquecível? O título histórico?\\n${dados.jogadorDestaque ? `Os dribles do ${dados.jogadorDestaque}?\\n` : ''}\\nVista a camisa que representa tudo isso!\\n\\n${dados.modelos.includes('edicao-especial') ? '✨ Edição especial para momentos especiais' : `🏆 Temporada ${dados.temporada}`}\\n💙 Premium 1.1 + Personalização\\n\\nSua história: ${dados.link}"
+  },
+  {
+    "nome": "Combo Benefícios",
+    "categoria": "promocional",
+    "template": "🎁 COMBO COMPLETO ${dados.nomeClube}!\\n\\nAo comprar você recebe:\\n🔹 Camisa Premium 1.1\\n🔹 Personalização grátis\\n🔹 Garantia de qualidade\\n🔹 Entrega rastreada\\n${dados.modelos.includes('edicao-especial') ? '🔹 Edição ESPECIAL limitada' : `🔹 Coleção ${dados.temporada}`}\\n\\nTudo isso em um só lugar: ${dados.link}"
+  },
+  {
+    "nome": "Últimas Unidades",
+    "categoria": "urgencia",
+    "template": "⏰ ÚLTIMAS UNIDADES! ${dados.nomeClube}\\n\\n${dados.modelos.includes('edicao-especial') || dados.modelos.includes('retro') ? '🚨 Edição limitada acabando!\\n⚠️ Quando acabar, acabou mesmo!' : `🚨 Estoque da ${dados.temporada} indo embora!\\n⚠️ Reposição incerta!`}\\n\\nNão fique de fora:\\n✓ Premium 1.1 qualidade\\n✓ Personalização free\\n✓ Garantia inclusa\\n\\nCORRE: ${dados.link}"
+  }
+]

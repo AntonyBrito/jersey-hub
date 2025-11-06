@@ -5,20 +5,22 @@ interface Encomenda {
   id: number;
   nome: string;
   modelo: string;
+  status: 'Pendente' | 'Concluído' | 'Cancelado';
 }
 
 interface EditModalProps {
   encomenda: Encomenda;
-  onSave: (id: number, nome: string, modelo: string) => void;
+  onSave: (id: number, nome: string, modelo: string, status: 'Pendente' | 'Concluído' | 'Cancelado') => void;
   onClose: () => void;
 }
 
 export default function EditModal({ encomenda, onSave, onClose }: EditModalProps) {
   const [nome, setNome] = useState(encomenda.nome);
   const [modelo, setModelo] = useState(encomenda.modelo);
+  const [status, setStatus] = useState(encomenda.status);
 
   const handleSave = () => {
-    onSave(encomenda.id, nome, modelo);
+    onSave(encomenda.id, nome, modelo, status);
   };
 
   return (
@@ -45,6 +47,19 @@ export default function EditModal({ encomenda, onSave, onClose }: EditModalProps
               onChange={(e) => setModelo(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
             />
+          </div>
+          <div>
+            <label htmlFor="edit-status" className="block text-sm font-medium text-gray-300 mb-2">Status</label>
+            <select
+              id="edit-status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as any)}
+              className="w-full px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
+            >
+              <option value="Pendente">Pendente</option>
+              <option value="Concluído">Concluído</option>
+              <option value="Cancelado">Cancelado</option>
+            </select>
           </div>
         </div>
         <div className="mt-8 flex justify-end space-x-4">

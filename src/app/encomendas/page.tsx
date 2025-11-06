@@ -6,7 +6,7 @@ interface Encomenda {
   id: number;
   nome: string;
   modelo: string;
-  status: 'Pendente' | 'Concluído';
+  status: 'Pendente' | 'Concluído' | 'Cancelado';
   dataCriacao: string;
 }
 
@@ -15,6 +15,7 @@ export default function Encomendas() {
   const [nome, setNome] = useState('');
   const [modelo, setModelo] = useState('');
   const [filtro, setFiltro] = useState('');
+  const [statusFiltro, setStatusFiltro] = useState<'all' | 'Pendente' | 'Concluído' | 'Cancelado'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [encomendaAtual, setEncomendaAtual] = useState<Encomenda | null>(null);
 
@@ -59,11 +60,11 @@ export default function Encomendas() {
     setIsModalOpen(true);
   };
 
-  const handleSave = async (id: number, nome: string, modelo: string) => {
+  const handleSave = async (id: number, nome: string, modelo: string, status: 'Pendente' | 'Concluído' | 'Cancelado') => {
     const res = await fetch('/api/encomendas', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, nome, modelo }),
+      body: JSON.stringify({ id, nome, modelo, status }),
     });
 
     if (res.ok) {
@@ -74,11 +75,11 @@ export default function Encomendas() {
     }
   };
 
-  const handleComplete = async (id: number) => {
+  const handleStatusChange = async (id: number, status: 'Pendente' | 'Concluído' | 'Cancelado') => {
     const res = await fetch('/api/encomendas', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id, status }),
     });
 
     if (res.ok) {
@@ -87,13 +88,16 @@ export default function Encomendas() {
     }
   };
 
-  const encomendasPendentes = encomendas.filter(e => e.status === 'Pendente');
-  const encomendasConcluidas = encomendas.filter(e => e.status === 'Concluído');
+  const filteredEncomendas = encomendas.filter(e => {
+    const searchMatch = e.nome.toLowerCase().includes(filtro.toLowerCase()) || e.modelo.toLowerCase().includes(filtro.toLowerCase());
+    const statusMatch = statusFiltro === 'all' || e.status === statusFiltro;
+    return searchMatch && statusMatch;
+  });
 
   return (
     <div className="bg-gray-900 min-h-screen text-white p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-8 text-center">Lista de Encomendas</h1>
+        <h1 className="text-4xl font-bold text-white mb-8 text-center">Gerenciamento de Encomendas</h1>
 
         <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
           <h2 className="text-2xl font-bold mb-4">Adicionar Nova Encomenda</h2>
@@ -110,50 +114,49 @@ export default function Encomendas() {
           </form>
         </div>
 
-        <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Encomendas Pendentes</h2>
-            <input type="text" value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="Pesquisar..." className="px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none" />
-          </div>
-          <div className="space-y-4">
-            {encomendasPendentes.length > 0 ? (
-              encomendasPendentes
-                .filter(e => e.nome.toLowerCase().includes(filtro.toLowerCase()) || e.modelo.toLowerCase().includes(filtro.toLowerCase()))
-                .map((encomenda) => (
-                  <div key={encomenda.id} className="bg-gray-700 p-4 rounded-lg flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold text-white">{encomenda.nome}</p>
-                      <p className="text-gray-400">{encomenda.modelo}</p>
-                    </div>
-                    <div className="flex space-x-2">
-                      <button onClick={() => handleEdit(encomenda)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Editar</button>
-                      <button onClick={() => handleDelete(encomenda.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Excluir</button>
-                      <button onClick={() => handleComplete(encomenda.id)} className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Concluir</button>
-                    </div>
-                  </div>
-                ))
-            ) : (
-              <p className="text-gray-400">Nenhuma encomenda pendente.</p>
-            )}
-          </div>
-        </div>
-
         <div className="bg-gray-800 p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4">Encomendas Concluídas</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">Lista de Encomendas</h2>
+            <div className="flex gap-4">
+              <input type="text" value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="Pesquisar..." className="px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none" />
+              <select value={statusFiltro} onChange={(e) => setStatusFiltro(e.target.value as any)} className="px-4 py-2 bg-gray-700 border-2 border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none">
+                <option value="all">Todos os Status</option>
+                <option value="Pendente">Pendente</option>
+                <option value="Concluído">Concluído</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
+            </div>
+          </div>
           <div className="space-y-4">
-            {encomendasConcluidas.length > 0 ? (
-              encomendasConcluidas
-                .filter(e => e.nome.toLowerCase().includes(filtro.toLowerCase()) || e.modelo.toLowerCase().includes(filtro.toLowerCase()))
-                .map((encomenda) => (
-                  <div key={encomenda.id} className="bg-gray-700 p-4 rounded-lg flex justify-between items-center opacity-60">
-                    <div>
-                      <p className="font-semibold text-white">{encomenda.nome}</p>
-                      <p className="text-gray-400">{encomenda.modelo}</p>
-                    </div>
+            {filteredEncomendas.length > 0 ? (
+              filteredEncomendas.map((encomenda) => (
+                <div key={encomenda.id} className={`bg-gray-700 p-4 rounded-lg flex justify-between items-center ${encomenda.status === 'Concluído' ? 'opacity-50' : ''}`}>
+                  <div>
+                    <p className="font-semibold text-white">{encomenda.nome}</p>
+                    <p className="text-gray-400">{encomenda.modelo}</p>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      encomenda.status === 'Pendente' ? 'bg-yellow-500 text-gray-900' :
+                      encomenda.status === 'Concluído' ? 'bg-green-500 text-gray-900' :
+                      'bg-red-500 text-white'
+                    }`}>{encomenda.status}</span>
                   </div>
-                ))
+                  <div className="flex space-x-2">
+                    <button onClick={() => handleEdit(encomenda)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Editar</button>
+                    <button onClick={() => handleDelete(encomenda.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg transition-colors">Excluir</button>
+                    <select
+                      value={encomenda.status}
+                      onChange={(e) => handleStatusChange(encomenda.id, e.target.value as any)}
+                      className="bg-gray-600 text-white rounded-lg px-2 py-1 focus:outline-none"
+                    >
+                      <option value="Pendente">Pendente</option>
+                      <option value="Concluído">Concluído</option>
+                      <option value="Cancelado">Cancelado</option>
+                    </select>
+                  </div>
+                </div>
+              ))
             ) : (
-              <p className="text-gray-400">Nenhuma encomenda concluída.</p>
+              <p className="text-gray-400">Nenhuma encomenda encontrada.</p>
             )}
           </div>
         </div>
@@ -162,7 +165,7 @@ export default function Encomendas() {
       {isModalOpen && encomendaAtual && (
         <EditModal
           encomenda={encomendaAtual}
-          onSave={handleSave}
+          onSave={(id, nome, modelo, status) => handleSave(id, nome, modelo, status as any)}
           onClose={() => setIsModalOpen(false)}
         />
       )}

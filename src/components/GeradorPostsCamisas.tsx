@@ -132,38 +132,32 @@ const GeradorPostsCamisas = () => {
     }));
   };
 
-  const gerarPosts = async () => {
+  const gerarPosts = () => {
     if (!formData.nomeClube || !formData.link) {
       alert('Por favor, preencha o nome do clube e o link!');
       return;
     }
+    setPostGerado('gerando');
+  };
 
-    const templatesFiltrados = templatesSelecionados === 'todos'
-      ? templates
-      : templates.filter(t => t.categoria === templatesSelecionados);
+  const copyToClipboard = async (text: string, index: any) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
 
-    const postsGerados = templatesFiltrados.map(template => {
-      return {
-        id: Date.now() + Math.random(),
-        content: gerarConteudoTemplate(template, formData),
-        createdAt: new Date().toISOString()
-      };
-    });
+    const postToSave = {
+      id: Date.now(),
+      content: text,
+      createdAt: new Date().toISOString(),
+    };
 
     await fetch('/api/posts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(postsGerados),
+      body: JSON.stringify([postToSave]),
     });
 
-    setPostGerado('gerando');
-  };
-
-  const copyToClipboard = (text: string, index: any) => {
-    navigator.clipboard.writeText(text);
-    setCopiedIndex(index);
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 

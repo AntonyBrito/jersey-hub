@@ -1,14 +1,23 @@
 [
   {
+    "id": 1,
     "nome": "@jules",
-    "modelo": "Camisa Real Madrid Away 23/24"
+    "modelo": "Camisa Real Madrid Away 23/24",
+    "status": "Pendente",
+    "dataCriacao": "2023-10-27T10:00:00Z"
   },
   {
+    "id": 2,
     "nome": "@jules",
-    "modelo": "Camisa Real Madrid Away 23/24"
+    "modelo": "Camisa Real Madrid Away 23/24",
+    "status": "Pendente",
+    "dataCriacao": "2023-10-27T10:00:00Z"
   },
   {
+    "id": 3,
     "nome": "@ana",
-    "modelo": "Camisa Barcelona Home 23/24"
+    "modelo": "Camisa Barcelona Home 23/24",
+    "status": "Pendente",
+    "dataCriacao": "2023-10-26T15:30:00Z"
   }
 ]

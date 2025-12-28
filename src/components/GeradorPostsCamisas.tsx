@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Copy, Check, Sparkles, Download } from 'lucide-react';
 
 interface FormData {
@@ -12,6 +12,16 @@ interface FormData {
   cor3: string;
   jogadorDestaque: string;
   preco: string;
+}
+
+interface Template {
+  nome: string;
+  categoria: string;
+  template: string;
+}
+
+interface Wildcards {
+  [key: string]: string[];
 }
 
 const GeradorPostsCamisas = () => {
@@ -29,7 +39,19 @@ const GeradorPostsCamisas = () => {
 
   const [postGerado, setPostGerado] = useState('');
   const [copiedIndex, setCopiedIndex] = useState<number | string | null>(null);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [wildcards, setWildcards] = useState<Wildcards>({});
   const [templatesSelecionados, setTemplatesSelecionados] = useState('todos');
+
+  useEffect(() => {
+    fetch('/templates.json')
+      .then(response => response.json())
+      .then(data => setTemplates(data));
+
+    fetch('/wildcards.json')
+      .then(response => response.json())
+      .then(data => setWildcards(data));
+  }, []);
 
   const modelosOptions: { [key: string]: string } = {
     'home': 'Home',
@@ -44,7 +66,7 @@ const GeradorPostsCamisas = () => {
     'pre-jogo': 'Pré-Jogo'
   };
 
-const categoriasTemplates: { [key: string]: string } = {
+  const categoriasTemplates: { [key: string]: string } = {
     'todos': 'Todos os Templates',
     'promocional': 'Promocionais',
     'emocional': 'Emocionais',
@@ -53,338 +75,54 @@ const categoriasTemplates: { [key: string]: string } = {
     'interativo': 'Interativos'
   };
 
-  const templates = [
-    {
-      nome: "Por que é diferente?",
-      categoria: 'informativo',
-      gerar: (dados: FormData) => `Por que nossa camisa do ${dados.nomeClube} é diferente?
-
-✓ Tecido Premium 1.1 (respirável e durável)
-✓ Personalização sem custo extra
-✓ Garantia em todas as compras
-✓ Vários modelos em um só anúncio
-
-Vale cada centavo: ${dados.link}`
-    },
-    {
-      nome: "Personalização GRÁTIS",
-      categoria: 'promocional',
-      gerar: (dados: FormData) => `⚡ Personalização GRÁTIS na camisa do ${dados.nomeClube}!
-
-Coloque seu nome, número do seu ídolo ou crie a sua própria.
-${dados.modelos.includes('edicao-especial') ? 'Edição especial exclusiva!' :
-          dados.modelos === 'home' ? 'Modelo Home disponível!' :
-            dados.modelos === 'away' ? 'Modelo Away disponível!' :
-              dados.modelos === 'third' ? 'Modelo Third disponível!' :
-                dados.modelos === 'home-away' ? 'Modelos Home e Away disponíveis!' :
-                  dados.modelos === 'goleiro' ? 'Modelo exclusivo de goleiro!' :
-                    dados.modelos === 'retro' ? 'Modelo retrô clássico!' :
-                      dados.modelos === 'treino' ? 'Modelo de treino oficial!' :
-                        dados.modelos === 'pre-jogo' ? 'Modelo de pré-jogo!' :
-                          'Vários modelos disponíveis - Home, Away e Third!'}
-
-📦 Entrega rápida
-🔒 Compra protegida
-
-Garanta a sua: ${dados.link}`
-    },
-    {
-      nome: "Qual você prefere?",
-      categoria: 'interativo',
-      gerar: (dados: FormData) => {
-        let opcoes = '';
-        if (dados.modelos === 'home') opcoes = `${dados.cor1} Home clássica`;
-        else if (dados.modelos === 'away') opcoes = `${dados.cor2} Away moderna`;
-        else if (dados.modelos === 'third') opcoes = `${dados.cor3} Third ousada`;
-        else if (dados.modelos === 'home-away') opcoes = `${dados.cor1} Home clássica\n${dados.cor2} Away moderna`;
-        else if (dados.modelos === 'home-away-third') opcoes = `${dados.cor1} Home clássica\n${dados.cor2} Away moderna\n${dados.cor3} Third ousada`;
-        else if (dados.modelos === 'edicao-especial') opcoes = `✨ Edição Especial Limitada`;
-        else if (dados.modelos === 'goleiro') opcoes = `🧤 Modelo Exclusivo de Goleiro`;
-        else if (dados.modelos === 'retro') opcoes = `⏰ Retrô Clássica`;
-        else if (dados.modelos === 'treino') opcoes = `💪 Treino Oficial`;
-        else opcoes = `🔥 Modelo Pré-Jogo`;
-
-        return `Qual camisa do ${dados.nomeClube} você prefere? 💭
-
-${opcoes}
-
-Todas disponíveis para personalizar!
-Garantia + Qualidade Premium 1.1
-
-Escolha a sua: ${dados.link}`;
-      }
-    },
-    {
-      nome: "Formato Elegante",
-      categoria: 'informativo',
-      gerar: (dados: FormData) => `🏆 | ${dados.nomeClube.toUpperCase()} ${dados.temporada} | 🏆
-
-━━━━━━━━━━━━━━━
-${dados.cor1} Coleção Completa
-⭐ Premium Quality 1.1
-✍️ Personalização Free
-🛡️ Garantia Inclusa
-━━━━━━━━━━━━━━━
-
-GARANTA: ${dados.link}`
-    },
-    {
-      nome: "Presente Perfeito",
-      categoria: 'emocional',
-      gerar: (dados: FormData) => `🎁 Presente perfeito para o torcedor do ${dados.nomeClube}!
-
-Surpreenda com a camisa oficial ${dados.temporada}
-Nome personalizado deixa ainda mais especial
-
-💙 Qualidade Premium 1.1 garantida
-📏 Todos os tamanhos disponíveis
-${dados.modelos.includes('edicao-especial') ? '✨ Edição especial limitada' :
-          dados.modelos === 'home-away-third' ? '🎨 3 modelos para escolher' :
-            '🎨 Modelos exclusivos'}
-
-Presenteie agora: ${dados.link}`
-    },
-    {
-      nome: "Urgência/Escassez",
-      categoria: 'urgencia',
-      gerar: (dados: FormData) => `🚨 ATENÇÃO, torcedor do ${dados.nomeClube}!
-
-${dados.modelos.includes('edicao-especial') ? 'Edição ESPECIAL com estoque super limitado!' : `Estoque limitado da coleção ${dados.temporada}`}
-Os modelos mais procurados estão saindo rápido
-
-✅ Qualidade Premium 1.1
-✅ Todos os tamanhos disponíveis (por enquanto!)
-✅ Personalização incluída
-
-Não perca: ${dados.link}`
-    },
-    {
-      nome: "Review/Depoimento",
-      categoria: 'emocional',
-      gerar: (dados: FormData) => `"A qualidade surpreendeu!" ⭐⭐⭐⭐⭐
-
-Camisa ${dados.nomeClube} ${dados.temporada} chegando nos torcedores!
-Tecido premium, acabamento impecável e personalização top.
-
-Você também pode ter a sua:
-🔹 Escolha o modelo
-🔹 Personalize como quiser
-🔹 Receba em casa
-
-Peça aqui: ${dados.link}`
-    },
-    {
-      nome: "Tradição/Emocional",
-      categoria: 'emocional',
-      gerar: (dados: FormData) => `${dados.cor1} A tradição do ${dados.nomeClube} merece estar no seu armário!
-
-Reviva a emoção com a nova camisa ${dados.temporada}.
-Perfeita para torcer, jogar ou usar no dia a dia.
-
-✨ Personalização incluída
-🛡️ Garantia + Qualidade Premium 1.1
-🎯 ${dados.modelos === 'home-away-third' ? 'Três modelos exclusivos' :
-          dados.modelos.includes('edicao-especial') ? 'Edição limitada exclusiva' :
-            'Modelos oficiais'}
-
-👉 ${dados.link}`
-    },
-    {
-      nome: "Call to Action Direto",
-      categoria: 'promocional',
-      gerar: (dados: FormData) => `⚽ CAMISA ${dados.nomeClube.toUpperCase()} ${dados.temporada} ⚽
-
-${dados.modelos === 'home' ? '✓ Modelo Home Oficial' :
-          dados.modelos === 'away' ? '✓ Modelo Away Oficial' :
-            dados.modelos === 'third' ? '✓ Modelo Third Oficial' :
-              dados.modelos === 'home-away' ? '✓ Modelos Home e Away' :
-                dados.modelos === 'home-away-third' ? '✓ Home | Away | Third' :
-                  dados.modelos === 'edicao-especial' ? '✓ EDIÇÃO ESPECIAL LIMITADA' :
-                    dados.modelos === 'goleiro' ? '✓ Modelo Goleiro Exclusivo' :
-                      dados.modelos === 'retro' ? '✓ Modelo Retrô Clássico' :
-                        dados.modelos === 'treino' ? '✓ Modelo Treino Oficial' :
-                          '✓ Modelo Pré-Jogo'}
-✓ Tecido Premium 1.1
-✓ Personalização Free
-✓ Garantia Total
-
-🔥 COMPRE AGORA: ${dados.link}`
-    },
-    {
-      nome: "Minimalista Pro",
-      categoria: 'informativo',
-      gerar: (dados: FormData) => `${dados.nomeClube} ${dados.temporada}
-
-Premium 1.1 | Personalização Free | Garantia
-
-${dados.link}`
-    },
-    {
-      nome: "Dia de Jogo",
-      categoria: 'emocional',
-      gerar: (dados: FormData) => `⚽ DIA DE JOGO DO ${dados.nomeClube.toUpperCase()}!
-
-Vista as cores do seu time com orgulho!
-${dados.modelos.includes('edicao-especial') ? 'Edição especial para verdadeiros torcedores' : `Camisa oficial ${dados.temporada}`}
-
-🔥 Tecido que não desbota
-💪 Conforto para torcer o jogo todo
-✍️ Coloque seu nome ou do craque
-
-Seja parte da torcida: ${dados.link}`
-    },
-    {
-      nome: "Comparação Vantagens",
-      categoria: 'informativo',
-      gerar: (dados: FormData) => `❌ Camisas genéricas
-✅ Camisa oficial ${dados.nomeClube}
-
-❌ Tecido comum
-✅ Premium 1.1 respirável
-
-❌ Sem garantia
-✅ Garantia em todas as compras
-
-❌ Personalização cara
-✅ Personalização GRÁTIS
-
-A escolha é óbvia: ${dados.link}`
-    },
-    {
-      nome: "Edição Limitada Especial",
-      categoria: 'urgencia',
-      gerar: (dados: FormData) => `⚠️ EDIÇÃO LIMITADA ${dados.nomeClube.toUpperCase()} ⚠️
-
-${dados.modelos.includes('edicao-especial') || dados.modelos.includes('retro') ?
-          '🎯 Poucas unidades disponíveis!\n🔥 Modelo exclusivo que vai esgotar' :
-          '🎯 Coleção especial disponível\n🔥 Aproveite enquanto tem estoque'}
-
-✨ Qualidade Premium 1.1
-✨ Personalização incluída
-✨ Entrega garantida
-
-GARANTA A SUA: ${dados.link}`
-    },
-    {
-      nome: "Antes/Depois",
-      categoria: 'emocional',
-      gerar: (dados: FormData) => `ANTES: Querer a camisa do ${dados.nomeClube}
-DEPOIS: Ter a camisa personalizada na sua casa!
-
-Como? É simples:
-1️⃣ Clica no link
-2️⃣ Escolhe o modelo
-3️⃣ Personaliza do seu jeito
-4️⃣ Recebe em casa
-
-${dados.modelos.includes('edicao-especial') ? '✨ Edição especial disponível!' : `✅ Premium 1.1 | ${dados.temporada}`}
-
-Realize agora: ${dados.link}`
-    },
-    {
-      nome: "Para Verdadeiros Torcedores",
-      categoria: 'emocional',
-      gerar: (dados: FormData) => `💚 PARA VERDADEIROS TORCEDORES DO ${dados.nomeClube.toUpperCase()}
-
-${dados.jogadorDestaque ? `Use o número do ${dados.jogadorDestaque}!\n` : ''}Mostre sua paixão com a camisa oficial
-${dados.modelos.includes('edicao-especial') ? 'Edição especial para os apaixonados' : `Temporada ${dados.temporada}`}
-
-⚡ Material Premium 1.1
-⚡ Personalização sem custo
-⚡ Garantia total
-
-Seu time, sua camisa: ${dados.link}`
-    },
-    {
-      nome: "Lista de Benefícios Completa",
-      categoria: 'informativo',
-      gerar: (dados: FormData) => `✅ CHECKLIST DA CAMISA PERFEITA ${dados.nomeClube}
-
-✓ Tecido Premium 1.1 respirável
-✓ Cores vibrantes que não desbotam
-✓ Tamanhos PP ao GG disponíveis
-✓ Personalização gratuita incluída
-✓ Garantia em todas as compras
-✓ Entrega rápida e rastreável
-${dados.modelos.includes('edicao-especial') ? '✓ Edição LIMITADA especial' : `✓ Coleção ${dados.temporada} oficial`}
-
-TUDO ISSO: ${dados.link}`
-    },
-    {
-      nome: "Investimento que Vale",
-      categoria: 'promocional',
-      gerar: (dados: FormData) => `💰 Investir na camisa do ${dados.nomeClube} VALE A PENA!
-
-Por quê?
-🎯 Dura muito (Premium 1.1)
-🎯 Usa em várias ocasiões
-🎯 Personalização já inclusa
-🎯 Garantia de qualidade
-${dados.preco ? `🎯 Apenas ${dados.preco}` : '🎯 Preço justo'}
-
-Invista no seu time: ${dados.link}`
-    },
-    {
-      nome: "Perguntas e Respostas",
-      categoria: 'interativo',
-      gerar: (dados: FormData) => `❓ DÚVIDAS SOBRE A CAMISA DO ${dados.nomeClube}?
-
-✅ É original? Premium 1.1 de alta qualidade
-✅ Posso personalizar? SIM, grátis!
-✅ Tem garantia? Sim, em todas as compras
-✅ Qual modelo? ${dados.modelos === 'home-away-third' ? 'Home, Away e Third' :
-          dados.modelos.includes('edicao-especial') ? 'Edição Especial' :
-            'Vários modelos disponíveis'}
-✅ Entrega rápida? Sim, com rastreio
-
-Todas as respostas aqui: ${dados.link}`
-    },
-    {
-      nome: "Storytelling Torcida",
-      categoria: 'emocional',
-      gerar: (dados: FormData) => `📖 Cada torcedor tem sua história com o ${dados.nomeClube}
-
-Qual é a sua?
-Aquele gol inesquecível? O título histórico?
-${dados.jogadorDestaque ? `Os dribles do ${dados.jogadorDestaque}?\n` : ''}
-Vista a camisa que representa tudo isso!
-
-${dados.modelos.includes('edicao-especial') ? '✨ Edição especial para momentos especiais' : `🏆 Temporada ${dados.temporada}`}
-💙 Premium 1.1 + Personalização
-
-Sua história: ${dados.link}`
-    },
-    {
-      nome: "Combo Benefícios",
-      categoria: 'promocional',
-      gerar: (dados: FormData) => `🎁 COMBO COMPLETO ${dados.nomeClube}!
-
-Ao comprar você recebe:
-🔹 Camisa Premium 1.1
-🔹 Personalização grátis
-🔹 Garantia de qualidade
-🔹 Entrega rastreada
-${dados.modelos.includes('edicao-especial') ? '🔹 Edição ESPECIAL limitada' : `🔹 Coleção ${dados.temporada}`}
-
-Tudo isso em um só lugar: ${dados.link}`
-    },
-    {
-      nome: "Últimas Unidades",
-      categoria: 'urgencia',
-      gerar: (dados: FormData) => `⏰ ÚLTIMAS UNIDADES! ${dados.nomeClube}
-
-${dados.modelos.includes('edicao-especial') || dados.modelos.includes('retro') ?
-          '🚨 Edição limitada acabando!\n⚠️ Quando acabar, acabou mesmo!' :
-          `🚨 Estoque da ${dados.temporada} indo embora!\n⚠️ Reposição incerta!`}
-
-Não fique de fora:
-✓ Premium 1.1 qualidade
-✓ Personalização free
-✓ Garantia inclusa
-
-CORRE: ${dados.link}`
+  const getRandomWildcard = (key: string) => {
+    const wildcardArray = wildcards[key];
+    if (!wildcardArray || wildcardArray.length === 0) {
+      return '';
     }
-  ];
+    return wildcardArray[Math.floor(Math.random() * wildcardArray.length)];
+  };
+
+  const processDynamicContent = (content: string, dados: FormData): string => {
+    const dynamicRegex = /\${(.*?)}/g;
+    let processedContent = content;
+
+    // First, replace simple placeholders like ${dados.nomeClube}
+    Object.keys(dados).forEach(key => {
+      const regex = new RegExp(`\\\${dados.${key}}`, 'g');
+      processedContent = processedContent.replace(regex, (dados as any)[key]);
+    });
+
+    // Then, evaluate more complex expressions
+    processedContent = processedContent.replace(dynamicRegex, (match, expression) => {
+      try {
+        // A safer way to evaluate expressions without exposing global scope
+        const func = new Function('dados', `return ${expression}`);
+        return func(dados);
+      } catch (error) {
+        // If it fails, it might be a wildcard, so return the match
+        return match;
+      }
+    });
+
+    return processedContent;
+  };
+
+  const gerarConteudoTemplate = (template: Template, dados: FormData) => {
+    let content = template.template;
+
+    // Process all dynamic content and placeholders
+    content = processDynamicContent(content, dados);
+
+    // Replace wildcards
+    content = content.replace(/\${saudacoes}/g, getRandomWildcard('saudacoes'));
+    content = content.replace(/\${despedidas}/g, getRandomWildcard('despedidas'));
+
+    // Finally, replace newline characters for correct rendering
+    content = content.replace(/\\n/g, '\n');
+
+    return content;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -402,9 +140,24 @@ CORRE: ${dados.link}`
     setPostGerado('gerando');
   };
 
-  const copyToClipboard = (text: string, index: any) => {
+  const copyToClipboard = async (text: string, index: any) => {
     navigator.clipboard.writeText(text);
     setCopiedIndex(index);
+
+    const postToSave = {
+      id: Date.now(),
+      content: text,
+      createdAt: new Date().toISOString(),
+    };
+
+    await fetch('/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([postToSave]),
+    });
+
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
@@ -414,7 +167,7 @@ CORRE: ${dados.link}`
       : templates.filter(t => t.categoria === templatesSelecionados);
 
     const todosOsPosts = templatesFiltrados
-      .map((template, index) => `=== POST ${index + 1}: ${template.nome} ===\n\n${template.gerar(formData)}\n\n`)
+      .map((template, index) => `=== POST ${index + 1}: ${template.nome} ===\n\n${gerarConteudoTemplate(template, formData)}\n\n`)
       .join('━━━━━━━━━━━━━━━━━━━\n\n');
 
     navigator.clipboard.writeText(todosOsPosts);
@@ -606,7 +359,7 @@ CORRE: ${dados.link}`
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {templatesFiltrados.map((template, index) => {
-                const postContent = template.gerar(formData);
+                const postContent = gerarConteudoTemplate(template, formData);
                 return (
                   <div key={index} className="bg-gray-700 rounded-lg shadow-md p-4 flex flex-col">
                     <div className="flex justify-between items-start mb-2">

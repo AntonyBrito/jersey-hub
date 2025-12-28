@@ -8,7 +8,7 @@ interface Encomenda {
   id: number;
   nome: string;
   modelo: string;
-  status: 'Pendente' | 'Concluído';
+  status: 'Pendente' | 'Concluído' | 'Cancelado';
   dataCriacao: string;
 }
 
@@ -58,25 +58,25 @@ export async function DELETE(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const { id, nome, modelo } = await request.json();
+  const { id, nome, modelo, status } = await request.json();
   let encomendas = readData();
   const index = encomendas.findIndex(e => e.id === id);
   if (index === -1) {
     return NextResponse.json({ message: 'Encomenda não encontrada' }, { status: 404 });
   }
-  encomendas[index] = { ...encomendas[index], nome, modelo };
+  encomendas[index] = { ...encomendas[index], nome, modelo, status };
   writeData(encomendas);
   return NextResponse.json(encomendas[index], { status: 200 });
 }
 
 export async function PATCH(request: Request) {
-  const { id } = await request.json();
+  const { id, status } = await request.json();
   let encomendas = readData();
   const index = encomendas.findIndex(e => e.id === id);
   if (index === -1) {
     return NextResponse.json({ message: 'Encomenda não encontrada' }, { status: 404 });
   }
-  encomendas[index].status = 'Concluído';
+  encomendas[index].status = status;
   writeData(encomendas);
   return NextResponse.json(encomendas[index], { status: 200 });
 }
